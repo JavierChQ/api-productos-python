@@ -1,0 +1,694 @@
+openapi: 3.0.3
+info:
+  title: API de Productos
+  version: 1.0.0
+  description: API REST para gestión de productos con Django y MySQL
+paths:
+  /api/productos/:
+    get:
+      operationId: api_productos_list
+      description: |-
+        Lista productos con paginación y filtros.
+
+        Parámetros de consulta:
+        - page: Número de página
+        - categoria: Filtrar por categoría
+        - marca: Filtrar por marca
+        - precio_min: Precio mínimo
+        - precio_max: Precio máximo
+        - solo_con_stock: Solo productos con stock
+        - orden: Ordenamiento (precio_asc, precio_desc, nombre, fecha_desc)
+
+        Returns:
+            Response: Lista paginada de productos
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: Un número de página dentro del conjunto de resultados paginado.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProductoListList'
+          description: ''
+    post:
+      operationId: api_productos_create
+      description: |-
+        ViewSet para gestionar productos.
+
+        Proporciona operaciones CRUD completas:
+        - GET /productos/ - Listar productos (con paginación y filtros)
+        - POST /productos/ - Crear nuevo producto
+        - GET /productos/{id}/ - Obtener producto específico
+        - PUT/PATCH /productos/{id}/ - Actualizar producto
+        - DELETE /productos/{id}/ - Eliminar producto
+
+        Acciones adicionales:
+        - GET /productos/buscar/ - Buscar productos por nombre, categoría o marca
+        - GET /productos/categoria/{categoria}/ - Filtrar por categoría
+        - GET /productos/marca/{marca}/ - Filtrar por marca
+        - GET /productos/sin-stock/ - Productos sin stock
+        - POST /productos/{id}/reducir-stock/ - Reducir stock de un producto
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoCreateUpdateRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoCreateUpdate'
+          description: ''
+  /api/productos/{id}/:
+    get:
+      operationId: api_productos_retrieve
+      description: |-
+        ViewSet para gestionar productos.
+
+        Proporciona operaciones CRUD completas:
+        - GET /productos/ - Listar productos (con paginación y filtros)
+        - POST /productos/ - Crear nuevo producto
+        - GET /productos/{id}/ - Obtener producto específico
+        - PUT/PATCH /productos/{id}/ - Actualizar producto
+        - DELETE /productos/{id}/ - Eliminar producto
+
+        Acciones adicionales:
+        - GET /productos/buscar/ - Buscar productos por nombre, categoría o marca
+        - GET /productos/categoria/{categoria}/ - Filtrar por categoría
+        - GET /productos/marca/{marca}/ - Filtrar por marca
+        - GET /productos/sin-stock/ - Productos sin stock
+        - POST /productos/{id}/reducir-stock/ - Reducir stock de un producto
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Producto.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+          description: ''
+    put:
+      operationId: api_productos_update
+      description: |-
+        ViewSet para gestionar productos.
+
+        Proporciona operaciones CRUD completas:
+        - GET /productos/ - Listar productos (con paginación y filtros)
+        - POST /productos/ - Crear nuevo producto
+        - GET /productos/{id}/ - Obtener producto específico
+        - PUT/PATCH /productos/{id}/ - Actualizar producto
+        - DELETE /productos/{id}/ - Eliminar producto
+
+        Acciones adicionales:
+        - GET /productos/buscar/ - Buscar productos por nombre, categoría o marca
+        - GET /productos/categoria/{categoria}/ - Filtrar por categoría
+        - GET /productos/marca/{marca}/ - Filtrar por marca
+        - GET /productos/sin-stock/ - Productos sin stock
+        - POST /productos/{id}/reducir-stock/ - Reducir stock de un producto
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Producto.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoCreateUpdateRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoCreateUpdate'
+          description: ''
+    patch:
+      operationId: api_productos_partial_update
+      description: |-
+        ViewSet para gestionar productos.
+
+        Proporciona operaciones CRUD completas:
+        - GET /productos/ - Listar productos (con paginación y filtros)
+        - POST /productos/ - Crear nuevo producto
+        - GET /productos/{id}/ - Obtener producto específico
+        - PUT/PATCH /productos/{id}/ - Actualizar producto
+        - DELETE /productos/{id}/ - Eliminar producto
+
+        Acciones adicionales:
+        - GET /productos/buscar/ - Buscar productos por nombre, categoría o marca
+        - GET /productos/categoria/{categoria}/ - Filtrar por categoría
+        - GET /productos/marca/{marca}/ - Filtrar por marca
+        - GET /productos/sin-stock/ - Productos sin stock
+        - POST /productos/{id}/reducir-stock/ - Reducir stock de un producto
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Producto.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProductoCreateUpdateRequest'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductoCreateUpdate'
+          description: ''
+    delete:
+      operationId: api_productos_destroy
+      description: |-
+        ViewSet para gestionar productos.
+
+        Proporciona operaciones CRUD completas:
+        - GET /productos/ - Listar productos (con paginación y filtros)
+        - POST /productos/ - Crear nuevo producto
+        - GET /productos/{id}/ - Obtener producto específico
+        - PUT/PATCH /productos/{id}/ - Actualizar producto
+        - DELETE /productos/{id}/ - Eliminar producto
+
+        Acciones adicionales:
+        - GET /productos/buscar/ - Buscar productos por nombre, categoría o marca
+        - GET /productos/categoria/{categoria}/ - Filtrar por categoría
+        - GET /productos/marca/{marca}/ - Filtrar por marca
+        - GET /productos/sin-stock/ - Productos sin stock
+        - POST /productos/{id}/reducir-stock/ - Reducir stock de un producto
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Producto.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/productos/{id}/reducir_stock/:
+    post:
+      operationId: api_productos_reducir_stock_create
+      description: |-
+        Reducir el stock de un producto específico.
+
+        Body:
+        {
+            "cantidad": 5
+        }
+
+        Returns:
+            Response: Resultado de la operación
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Un valor de entero único que identifique este Producto.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductoRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+          description: ''
+  /api/productos/buscar/:
+    get:
+      operationId: api_productos_buscar_retrieve
+      description: |-
+        Buscar productos por nombre, categoría o marca.
+
+        Parámetros:
+        - q: Término de búsqueda
+        - limit: Límite de resultados (por defecto: 20)
+
+        Returns:
+            Response: Lista de productos que coinciden con la búsqueda
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+          description: ''
+  /api/productos/categoria/{categoria}/:
+    get:
+      operationId: api_productos_categoria_retrieve
+      description: |-
+        Filtrar productos por categoría específica.
+
+        Args:
+            categoria: Nombre de la categoría
+
+        Returns:
+            Response: Lista de productos de la categoría
+      parameters:
+      - in: path
+        name: categoria
+        schema:
+          type: string
+          title: Categoría
+          description: Categoría a la que pertenece el producto
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+          description: ''
+  /api/productos/marca/{marca}/:
+    get:
+      operationId: api_productos_marca_retrieve
+      description: |-
+        Filtrar productos por marca específica.
+
+        Args:
+            marca: Nombre de la marca
+
+        Returns:
+            Response: Lista de productos de la marca
+      parameters:
+      - in: path
+        name: marca
+        schema:
+          type: string
+          description: Marca del producto
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+          description: ''
+  /api/productos/sin_stock/:
+    get:
+      operationId: api_productos_sin_stock_retrieve
+      description: |-
+        Obtener productos sin stock disponible.
+
+        Returns:
+            Response: Lista de productos con cantidad = 0
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+          description: ''
+components:
+  schemas:
+    PaginatedProductoListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductoList'
+    PatchedProductoCreateUpdateRequest:
+      type: object
+      description: |-
+        Serializador específico para operaciones de creación y actualización.
+
+        Excluye campos de solo lectura para optimizar las operaciones
+        de escritura en la base de datos.
+      properties:
+        nombre:
+          type: string
+          minLength: 1
+          title: Nombre del producto
+          description: Nombre descriptivo del producto
+          maxLength: 200
+        categoria:
+          type: string
+          minLength: 1
+          title: Categoría
+          description: Categoría a la que pertenece el producto
+          maxLength: 100
+        marca:
+          type: string
+          minLength: 1
+          description: Marca del producto
+          maxLength: 100
+        precio:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          description: Precio del producto en la moneda base
+        cantidad:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+          description: Cantidad disponible en inventario
+    Producto:
+      type: object
+      description: |-
+        Serializador para el modelo Producto.
+
+        Proporciona serialización/deserialización de objetos Producto
+        para la API REST, incluyendo validaciones personalizadas.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        nombre:
+          type: string
+          title: Nombre del producto
+          description: Nombre descriptivo del producto
+          maxLength: 200
+        categoria:
+          type: string
+          title: Categoría
+          description: Categoría a la que pertenece el producto
+          maxLength: 100
+        marca:
+          type: string
+          description: Marca del producto
+          maxLength: 100
+        precio:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          description: Precio del producto en la moneda base
+        cantidad:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+          description: Cantidad disponible en inventario
+        fecha_creacion:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Fecha de creación
+        fecha_actualizacion:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Fecha de actualización
+        precio_formateado:
+          type: string
+          readOnly: true
+        tiene_stock:
+          type: boolean
+          readOnly: true
+      required:
+      - cantidad
+      - categoria
+      - fecha_actualizacion
+      - fecha_creacion
+      - id
+      - marca
+      - nombre
+      - precio
+      - precio_formateado
+      - tiene_stock
+    ProductoCreateUpdate:
+      type: object
+      description: |-
+        Serializador específico para operaciones de creación y actualización.
+
+        Excluye campos de solo lectura para optimizar las operaciones
+        de escritura en la base de datos.
+      properties:
+        nombre:
+          type: string
+          title: Nombre del producto
+          description: Nombre descriptivo del producto
+          maxLength: 200
+        categoria:
+          type: string
+          title: Categoría
+          description: Categoría a la que pertenece el producto
+          maxLength: 100
+        marca:
+          type: string
+          description: Marca del producto
+          maxLength: 100
+        precio:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          description: Precio del producto en la moneda base
+        cantidad:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+          description: Cantidad disponible en inventario
+      required:
+      - cantidad
+      - categoria
+      - marca
+      - nombre
+      - precio
+    ProductoCreateUpdateRequest:
+      type: object
+      description: |-
+        Serializador específico para operaciones de creación y actualización.
+
+        Excluye campos de solo lectura para optimizar las operaciones
+        de escritura en la base de datos.
+      properties:
+        nombre:
+          type: string
+          minLength: 1
+          title: Nombre del producto
+          description: Nombre descriptivo del producto
+          maxLength: 200
+        categoria:
+          type: string
+          minLength: 1
+          title: Categoría
+          description: Categoría a la que pertenece el producto
+          maxLength: 100
+        marca:
+          type: string
+          minLength: 1
+          description: Marca del producto
+          maxLength: 100
+        precio:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          description: Precio del producto en la moneda base
+        cantidad:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+          description: Cantidad disponible en inventario
+      required:
+      - cantidad
+      - categoria
+      - marca
+      - nombre
+      - precio
+    ProductoList:
+      type: object
+      description: |-
+        Serializador simplificado para listados de productos.
+
+        Incluye solo los campos esenciales para optimizar
+        el rendimiento en listados con muchos productos.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        nombre:
+          type: string
+          title: Nombre del producto
+          description: Nombre descriptivo del producto
+          maxLength: 200
+        categoria:
+          type: string
+          title: Categoría
+          description: Categoría a la que pertenece el producto
+          maxLength: 100
+        marca:
+          type: string
+          description: Marca del producto
+          maxLength: 100
+        precio:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          description: Precio del producto en la moneda base
+        cantidad:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+          description: Cantidad disponible en inventario
+        precio_formateado:
+          type: string
+          readOnly: true
+        tiene_stock:
+          type: boolean
+          readOnly: true
+      required:
+      - cantidad
+      - categoria
+      - id
+      - marca
+      - nombre
+      - precio
+      - precio_formateado
+      - tiene_stock
+    ProductoRequest:
+      type: object
+      description: |-
+        Serializador para el modelo Producto.
+
+        Proporciona serialización/deserialización de objetos Producto
+        para la API REST, incluyendo validaciones personalizadas.
+      properties:
+        nombre:
+          type: string
+          minLength: 1
+          title: Nombre del producto
+          description: Nombre descriptivo del producto
+          maxLength: 200
+        categoria:
+          type: string
+          minLength: 1
+          title: Categoría
+          description: Categoría a la que pertenece el producto
+          maxLength: 100
+        marca:
+          type: string
+          minLength: 1
+          description: Marca del producto
+          maxLength: 100
+        precio:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          description: Precio del producto en la moneda base
+        cantidad:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+          description: Cantidad disponible en inventario
+      required:
+      - cantidad
+      - categoria
+      - marca
+      - nombre
+      - precio
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid

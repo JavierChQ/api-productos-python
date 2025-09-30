@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.sqlite3
+
+# Entorno virtual
+env/
+venv/
+ENV/
+.venv/
+
+# Archivos de entorno y configuración sensibles
+.env
+.env.*
+
+# Docker
+mysql-data/
+mysql-data
+docker-compose.override.yml
+docker-compose.prod.yml
+
+# Archivos de logs
+*.log
+
+# Archivos de migraciones de bases de datos temporales
+*.db
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Otros
+*.bak
+*.swp
