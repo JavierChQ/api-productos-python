@@ -13,7 +13,6 @@ ENV/
 
 # Archivos de entorno y configuración sensibles
 .env
-.env.*
 
 # Docker
 mysql-data/
